@@ -1,68 +1,40 @@
 import Vue from 'vue'
+import MyPlugins from '@/plugins/myplugin'
+import VueQuillEditor from 'vue-quill-editor'
+// require styles
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+import 'normalize.css/normalize.css'// A modern alternative to CSS resets
+
+// import ElementUI from 'element-ui'
+// import 'element-ui/lib/theme-chalk/index.css'
+// import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
+import SlideVerify from 'vue-monoplasty-slide-verify'
+import '../static/css/theme/index.css'
+import '@/styles/index.scss' // global css
+
 import App from './App'
+import router from './router'
 import store from './store'
 
+import '@/icons' // icon
+import '@/permission' // permission control
+import '@/validate' // validate
+
+Vue.use(VueQuillEditor)
+// Vue.use(ElementUI, { locale, size: 'small', zIndex: 3000 })
+Vue.use(SlideVerify)
+Vue.use(MyPlugins)
 Vue.config.productionTip = false
-App.mpType = 'app'
-Vue.use(require('vue-moment'))
+console.log('env is' + process.env.NODE_ENV)
+/* eslint-disable no-new */
 
-Vue.prototype.$store = store
-const app = new Vue(App)
-app.$mount()
-
-export default {
-  // 这个字段走 app.json
-  config: {
-    // 页面前带有 ^ 符号的，会被编译成首页，其他页面可以选填，我们会自动把 webpack entry 里面的入口页面加进去
-    pages: ['pages/logs/main', '^pages/index/main'],
-    window: {
-      backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#3c4253',
-      navigationBarTitleText: '',
-      navigationBarTextStyle: 'white'
-    },
-    tabBar: {
-      color: '#ffffff',
-      backgroundColor: '#3c4253',
-      selectedColor: '#f5b619',
-      list: [{
-        pagePath: 'pages/index/main',
-        text: '广播',
-        iconPath: '/static/icon/guangboone.png',
-        selectedIconPath: '/static/icon/guangbothree.png'
-      }, {
-        pagePath: 'pages/task/main',
-        text: '任务',
-        iconPath: '/static/icon/taskiconOne.png',
-        selectedIconPath: '/static/icon/taskiconTwo.png'
-      }, {
-        pagePath: 'pages/bgMusic/main',
-        text: '媒资',
-        iconPath: '/static/icon/musiciconone.png',
-        selectedIconPath: '/static/icon/musiciconthree.png'
-      }, {
-        pagePath: 'pages/my/main',
-        text: '我的',
-        iconPath: '/static/icon/myiconone.png',
-        selectedIconPath: '/static/icon/myiconthree.png'
-      }],
-      borderStyle: 'black'
-    },
-    usingComponents: {
-      'vant-area': '/static/vant/area/index',
-      'van-swipe-cell': '/static/vant/swipe-cell/index',
-      'notice-bar': '/static/vant/notice-bar/index',
-      'van-steps': '/static/vant/steps/index',
-      'van-dialog': '/static/vant/dialog/index',
-      'van-collapse': '/static/vant/collapse/index',
-      'van-collapse-item': '/static/vant/collapse-item/index',
-      'van-circle': '/static/vant/circle/index'
-    },
-    plugins: {
-      WechatSI: {
-        version: '0.3.3',
-        provider: 'wx069ba97219f66d99'
-      }
-    }
-  }
-}
+new Vue({
+  el: '#app',
+  router,
+  store,
+  template: '<App/>',
+  components: { App }
+})
