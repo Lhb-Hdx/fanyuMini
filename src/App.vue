@@ -1,69 +1,57 @@
-<template>
-  <div id="app" @click.stop="refresh">
-    <router-view></router-view>
-  </div>
-</template>
-
 <script>
-import { mapGetters } from 'vuex'
 export default {
-  name: 'App',
-  data () {
-    return {}
-  },
-  computed: {
-    ...mapGetters(['token'])
-  },
-  methods: {
-    refresh () {
-      if (this.token !== localStorage.getItem('loginToken')) {
-        window.location.reload()
-      }
-    }
+  created () {
+    // 调用API从本地缓存中获取数据
+    const logs = wx.getStorageSync('logs') || []
+    logs.unshift(Date.now())
+    wx.setStorageSync('logs', logs)
+
+    console.log('app created and cache logs by setStorageSync')
+
+    const updateManager = wx.getUpdateManager()
+    updateManager.onCheckForUpdate(function (res) {
+      // 请求完新版本信息的回调
+      console.log(res.hasUpdate)
+    })
+
+    updateManager.onUpdateReady(function () {
+      console.log('下载完成')
+      wx.showModal({
+        title: '更新提示',
+        content: '新版本已经准备好，是否马上重启小程序？',
+        success: function (res) {
+          if (res.confirm) {
+            // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+            updateManager.applyUpdate()
+          }
+        }
+      })
+    })
+
+    updateManager.onUpdateFailed(function () {
+      console.log('新的版本下载失败')
+    })
   }
 }
 </script>
 
-<style lang="less">
-// html,body,#app{
-//       height: 90%;
-//       background-color: black;
-//     }
-body .el-table colgroup.gutter{
-  display: table-cell !important;
+<style>
+.container {
+  /* height: 100%; */
+  /* width: 100%; */
+  /* padding: 0 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between; */
+  /* padding: 200rpx 0; */
+  box-sizing: border-box;
 }
-body .el-table th.gutter{
-  display: table-cell!important;
-}
-.container-box {
-  margin-top: 60px;
-  margin-left: 10px;
-  border: 1px solid #dcdfe6;
-  .container-top {
-    padding: 10px;
-    border-bottom: 1px solid #dcdfe6;
-    .line {
-      text-align: center;
-    }
-  }
-  .container-total-box {
-    color: #e82c50;
-    margin: 20px 10px 10px 10px;
-    .total-item {
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-      align-items: center;
-      .total-item-item {
-        margin-right: 15px;
-      }
-    }
-  }
-  .container-table {
-    padding-bottom: 20px;
-    .table-pagination {
-      padding: 10px;
-    }
-  }
+/* this rule will be remove */
+* {
+  transition: width 2s;
+  -moz-transition: width 2s;
+  -webkit-transition: width 2s;
+  -o-transition: width 2s;
 }
 </style>
